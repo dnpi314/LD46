@@ -20,6 +20,7 @@ public class BubbyMovement : MonoBehaviour
     private int current_sprite = 0;
     private bool is_alive = true;
     private int walking_direction = 1;
+    private bool on_ground = true;
 
     // Start is called before the first frame update
     void Start()
@@ -32,14 +33,11 @@ public class BubbyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Only do this if Bubby is alive and kicking
-        if (is_alive)
+        // Only do this if Bubby is alive and kicking and on the ground
+        if (is_alive && on_ground)
         {
             // Update animation timer
             animation_time += Time.deltaTime;
-
-            // Move Bubby
-            rigid_body.velocity = new Vector2((float)walking_direction * movement_speed, rigid_body.velocity.y);
         }
 
         // Check if its time to change animation sprite
@@ -47,6 +45,22 @@ public class BubbyMovement : MonoBehaviour
         {
             animation_time = 0;
             ChangeSprite();
+        }
+    }
+
+    // Movement with rigid body so do this here
+    private void FixedUpdate()
+    {
+        // Only do this if Bubby is alive and kicking and on the ground
+        if (is_alive && on_ground)
+        {
+            // Move Bubby
+            rigid_body.velocity = new Vector2((float)walking_direction * movement_speed, rigid_body.velocity.y);
+        }
+        // Check if falling
+        if (rigid_body.velocity.y < -0.5f)
+        {
+            on_ground = false;
         }
     }
 
@@ -66,15 +80,56 @@ public class BubbyMovement : MonoBehaviour
         sprite_renderer.sprite = walk_cycle[current_sprite];
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Check if Bubby is touching the ground
+        if (collision.collider.tag == "Ground")
+        {
+            // Check if it's the feet touching
+            ContactPoint2D contact_point = collision.GetContact(0);
+            float diff = contact_point.point.y - collision.collider.transform.position.y;
+            if (Mathf.Abs(diff) < 0.1f)
+            {
+                on_ground = true;
+            }
+        }
+        // Check if Bubby is touching a box
+        if (collision.collider.tag == "Box")
+        {
+            // Check if it's the side touching
+            ContactPoint2D contact_point = collision.GetContact(0);
+            float diff_left = contact_point.point.x - (collision.collider.transform.position.x - 0.125f);
+            float diff_right = contact_point.point.x - (collision.collider.transform.position.x + 0.125f);
+            float diff_bot = contact_point.point.y - (collision.collider.transform.position.y - 0.125f);
+            if (Mathf.Abs(diff_left) < 0.1f || Mathf.Abs(diff_right) < 0.1f)
+            {
+                // Change direction
+                walking_direction *= -1;
+                sprite_renderer.flipX = !sprite_renderer.flipX;
+            }
+            // Check if it's the bottom touching
+            else if (Mathf.Abs(diff_bot) < 0.1f)
+            {
+                Die();
+            }
+        }
+    }
+
     // Called when Bubby walks into spikes
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Deadly")
         {
-            is_alive = false; // He's dead now duh
-            sprite_renderer.sprite = dead_sprite; // Make him look dead
-            rigid_body.simulated = false; // Stop moving
-            particle_system.Play(); // Bloooooooood
+            Die();
         }
+    }
+
+    // Called when Bubby dies
+    void Die()
+    {
+        is_alive = false; // He's dead now duh
+        sprite_renderer.sprite = dead_sprite; // Make him look dead
+        rigid_body.simulated = false; // Stop moving
+        particle_system.Play(); // Bloooooooood
     }
 }

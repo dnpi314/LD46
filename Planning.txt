@@ -16,3 +16,13 @@ To do Friday:
 		- Get him to turn around
 	X Make Bubby's art
 	X Program death from spikes
+	
+To do Saturday
+	X Fix midair movement
+	X Get Bubby to turn around
+	X Player animations
+	X Box pushing
+	Switch pressing
+	Doors
+	Crushing walls
+	Make puzzles
