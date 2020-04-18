@@ -1,0 +1,20 @@
+Theme: Keep it Alive
+
+Ideas:
+White blood cells fighting infection
+Keep vital thing alive with something collected in dangerous area (already did something similar)
+
+Keep Bubby Alive
+	Bubby is relly stupid but cute, must keep it alive while it navigates a maze of traps
+	Player must frantically platform and solve puzzles
+	The game is over if either the player or Bubby dies
+	The player can get Bubby to avoid trap, by disabling them with a switch, pushing blocks, or changing Bubby's walking direction or timing
+	Types of traps:
+		Spike pits
+		Crushing walls
+		
+To do Friday:
+	Program player controls
+	Script Bubby's movement
+	Make Bubby's art
+	Program death from spikes
