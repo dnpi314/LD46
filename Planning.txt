@@ -1,9 +1,5 @@
 Theme: Keep it Alive
 
-Ideas:
-White blood cells fighting infection
-Keep vital thing alive with something collected in dangerous area (already did something similar)
-
 Keep Bubby Alive
 	Bubby is relly stupid but cute, must keep it alive while it navigates a maze of traps
 	Player must frantically platform and solve puzzles
@@ -14,7 +10,9 @@ Keep Bubby Alive
 		Crushing walls
 		
 To do Friday:
-	Program player controls
-	Script Bubby's movement
-	Make Bubby's art
-	Program death from spikes
+	/ Program player controls
+		- Fix midair movement
+	/ Script Bubby's movement
+		- Get him to turn around
+	X Make Bubby's art
+	X Program death from spikes
