@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sprite_renderer;
     private Rigidbody2D rigid_body;
     private ParticleSystem particle_system;
+    private AudioSource audio_source;
+    private AudioSource box_audio;
 
     // Editor paramaters
     public float movement_speed;
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour
         sprite_renderer = GetComponent<SpriteRenderer>();
         rigid_body = GetComponent<Rigidbody2D>();
         particle_system = GetComponent<ParticleSystem>();
+        audio_source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -54,6 +57,8 @@ public class PlayerController : MonoBehaviour
                 Vector2 velocity = rigid_body.velocity;
                 velocity.y = jump_power;
                 rigid_body.velocity = velocity;
+                // play jump sound
+                audio_source.Play();
 
                 on_ground = false; // no longer on ground after jumping duh
             }
@@ -215,8 +220,9 @@ public class PlayerController : MonoBehaviour
         if (collision.collider.tag == "Box")
         {
             pushing_box = true;
+            box_audio = collision.collider.GetComponent<AudioSource>();
             // Check if it's the top touching
-            if (y_diff > 0 && Mathf.Abs(x_diff) < 0.22f)
+            if (y_diff > 0 && Mathf.Abs(x_diff) < 0.2f)
             {
                 pushing_box = false;
                 on_ground = true;
@@ -228,6 +234,9 @@ public class PlayerController : MonoBehaviour
                 // Place hand on box to left
                 front_hand.localPosition = new Vector3(hand_positions[7].x, hand_positions[7].y, 0);
                 back_hand.localPosition = new Vector3(hand_positions[8].x, hand_positions[8].y, 0);
+
+                // play scraping sound
+                box_audio.Play();
             }
             // check if its the right side touching
             else if (x_diff > 0)
@@ -235,6 +244,9 @@ public class PlayerController : MonoBehaviour
                 // Place hand on box to right
                 front_hand.localPosition = new Vector3(-hand_positions[7].x, hand_positions[7].y, 0);
                 back_hand.localPosition = new Vector3(-hand_positions[8].x, hand_positions[8].y, 0);
+
+                // play scraping sound
+                box_audio.Play();
             }
         }
     }
@@ -245,6 +257,9 @@ public class PlayerController : MonoBehaviour
         if (collision.collider.tag == "Box")
         {
             pushing_box = false;
+
+            // stop sound
+            box_audio.Stop();
         }
     }
 
@@ -254,6 +269,8 @@ public class PlayerController : MonoBehaviour
         // Check if it's deadly
         if (collision.tag == "Deadly")
         {
+            // make sound
+            collision.GetComponent<AudioSource>().Play();
             Die();
         }
 
@@ -284,5 +301,13 @@ public class PlayerController : MonoBehaviour
         rigid_body.simulated = false; // Stop moving
         particle_system.Play(); // Bloooooooood
         level_manager.ChangeState(1);
+    }
+
+    private void OnDisable()
+    {
+        if (box_audio != null)
+        {
+            box_audio.Stop();
+        }
     }
 }

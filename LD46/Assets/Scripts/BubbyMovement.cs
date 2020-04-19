@@ -8,6 +8,7 @@ public class BubbyMovement : MonoBehaviour
     private SpriteRenderer sprite_renderer;
     private Rigidbody2D rigid_body;
     private ParticleSystem particle_system;
+    private AudioSource audio_source;
 
     // Editor paramaters
     public float movement_speed;
@@ -29,6 +30,7 @@ public class BubbyMovement : MonoBehaviour
         sprite_renderer = GetComponent<SpriteRenderer>();
         rigid_body = GetComponent<Rigidbody2D>();
         particle_system = GetComponent<ParticleSystem>();
+        audio_source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -138,10 +140,13 @@ public class BubbyMovement : MonoBehaviour
     {
         if (collision.tag == "Deadly")
         {
+            // make sound
+            collision.GetComponent<AudioSource>().Play();
             Die();
         }
         else if (collision.tag == "Goal")
         {
+            audio_source.Play();
             level_manager.ChangeState(0);
         }
     }

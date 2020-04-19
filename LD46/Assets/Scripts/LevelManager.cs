@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
+    AudioSource audio_source;
+
     // Editor paramaters
     public MonoBehaviour[] actors;
     public Canvas start_ui;
@@ -22,6 +24,7 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audio_source = GetComponent<AudioSource>();
         if (has_tutorial)
         {
             ui_state = UIState.tutorial;
@@ -31,6 +34,11 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //audio
+        if (Input.GetButtonDown("Activate") && ui_state != UIState.game)
+        {
+            audio_source.Play();
+        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(level);
