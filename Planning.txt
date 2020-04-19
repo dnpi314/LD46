@@ -22,7 +22,17 @@ To do Saturday
 	X Get Bubby to turn around
 	X Player animations
 	X Box pushing
-	Switch pressing
-	Doors
+	X Switch pressing
+	X Doors
 	Crushing walls
-	Make puzzles
+	Pressure plate (Bubby uses this too!)
+	Lazers (maybe moving ones)
+	X Tutorial
+	
+	2 Make puzzles
+	
+	
+	
+	
+Known Bugs:
+	Clipping the corner of a box while falling can mess with the animations

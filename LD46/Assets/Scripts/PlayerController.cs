@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     public Transform front_hand;
     public Transform back_hand;
     public Vector2[] hand_positions;
+    public LevelManager level_manager;
 
     // Player's state variables
     private float animation_time = 0;
@@ -29,6 +30,8 @@ public class PlayerController : MonoBehaviour
     private bool on_ground = true;
     private bool is_falling = false;
     private bool pushing_box = false;
+    private bool can_push_switch = false;
+    private Switch push_switch;
 
     // Start is called before the first frame update
     void Start()
@@ -132,6 +135,15 @@ public class PlayerController : MonoBehaviour
                     }
                 }
             }
+
+            // pressing a switch
+            if (can_push_switch)
+            {
+                if (Input.GetButtonDown("Activate"))
+                {
+                    push_switch.Activate();
+                }
+            }
         }
     }
 
@@ -202,11 +214,19 @@ public class PlayerController : MonoBehaviour
         if (collision.collider.tag == "Box")
         {
             pushing_box = true;
-            // Check if it's the side touching
             ContactPoint2D contact_point = collision.GetContact(0);
             float diff_left = contact_point.point.x - (collision.collider.transform.position.x - 0.125f);
             float diff_right = contact_point.point.x - (collision.collider.transform.position.x + 0.125f);
-            if (Mathf.Abs(diff_left) < 0.1f)
+            float diff_top = contact_point.point.y - (collision.collider.transform.position.y + 0.125f);
+            // Check if it's the top touching
+            if (Mathf.Abs(diff_top) < 0.1f)
+            {
+                pushing_box = false;
+                on_ground = true;
+                is_falling = false;
+            }
+            // Check if it's the side touching
+            else if (Mathf.Abs(diff_left) < 0.1f)
             {
                 // Place hand on box to left
                 front_hand.localPosition = new Vector3(hand_positions[7].x, hand_positions[7].y, 0);
@@ -230,18 +250,41 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Called when Player walks into spikes
+    // Called when Player walks into spikes or near a switch
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // Check if it's deadly
         if (collision.tag == "Deadly")
         {
-            is_alive = false; // He's dead now duh
-            sprite_renderer.sprite = dead_sprite; // Make him look dead
-            // including hands
-            front_hand.localPosition = new Vector3(hand_positions[5].x, hand_positions[5].y, 0);
-            back_hand.localPosition = new Vector3(hand_positions[6].x, hand_positions[6].y, 0);
-            rigid_body.simulated = false; // Stop moving
-            particle_system.Play(); // Bloooooooood
+            Die();
         }
+
+        // Check if it's a switch
+        if (collision.tag == "Switch")
+        {
+            can_push_switch = true;
+            push_switch = collision.GetComponent<Switch>();
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        // Check if it's a switch
+        if (collision.tag == "Switch")
+        {
+            can_push_switch = false;
+        }
+    }
+
+    void Die()
+    {
+        is_alive = false; // He's dead now duh
+        sprite_renderer.sprite = dead_sprite; // Make him look dead
+                                              // including hands
+        front_hand.localPosition = new Vector3(hand_positions[5].x, hand_positions[5].y, 0);
+        back_hand.localPosition = new Vector3(hand_positions[6].x, hand_positions[6].y, 0);
+        rigid_body.simulated = false; // Stop moving
+        particle_system.Play(); // Bloooooooood
+        level_manager.ChangeState(1);
     }
 }

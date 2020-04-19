@@ -14,6 +14,7 @@ public class BubbyMovement : MonoBehaviour
     public float animation_speed;
     public Sprite[] walk_cycle;
     public Sprite dead_sprite;
+    public LevelManager level_manager;
 
     // Bubby's state variables
     private float animation_time = 0;
@@ -92,9 +93,16 @@ public class BubbyMovement : MonoBehaviour
             {
                 on_ground = true;
             }
+            // otherwise its side (probably)
+            else
+            {
+                // Change direction
+                walking_direction *= -1;
+                sprite_renderer.flipX = !sprite_renderer.flipX;
+            }
         }
-        // Check if Bubby is touching a box
-        if (collision.collider.tag == "Box")
+        // Check if Bubby is touching a box or solid object
+        if (collision.collider.tag == "Box" || collision.collider.tag == "Solid")
         {
             // Check if it's the side touching
             ContactPoint2D contact_point = collision.GetContact(0);
@@ -115,12 +123,16 @@ public class BubbyMovement : MonoBehaviour
         }
     }
 
-    // Called when Bubby walks into spikes
+    // Called when Bubby walks into spikes or the goal
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Deadly")
         {
             Die();
+        }
+        else if (collision.tag == "Goal")
+        {
+            level_manager.ChangeState(0);
         }
     }
 
@@ -131,5 +143,6 @@ public class BubbyMovement : MonoBehaviour
         sprite_renderer.sprite = dead_sprite; // Make him look dead
         rigid_body.simulated = false; // Stop moving
         particle_system.Play(); // Bloooooooood
+        level_manager.ChangeState(1);
     }
 }
