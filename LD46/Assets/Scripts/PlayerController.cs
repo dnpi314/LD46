@@ -198,13 +198,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // Check relative position
+        float y_diff = transform.position.y - collision.transform.position.y;
+        float x_diff = transform.position.x - collision.transform.position.x;
         // Check if player is touching the ground
         if (collision.collider.tag == "Ground")
         {
             // Check if it's the feet touching
-            ContactPoint2D contact_point = collision.GetContact(0);
-            float diff = contact_point.point.y - collision.collider.transform.position.y;
-            if (Mathf.Abs(diff) < 0.1f)
+            if (y_diff > 0)
             {
                 on_ground = true;
                 is_falling = false;
@@ -214,27 +215,24 @@ public class PlayerController : MonoBehaviour
         if (collision.collider.tag == "Box")
         {
             pushing_box = true;
-            ContactPoint2D contact_point = collision.GetContact(0);
-            float diff_left = contact_point.point.x - (collision.collider.transform.position.x - 0.125f);
-            float diff_right = contact_point.point.x - (collision.collider.transform.position.x + 0.125f);
-            float diff_top = contact_point.point.y - (collision.collider.transform.position.y + 0.125f);
             // Check if it's the top touching
-            if (Mathf.Abs(diff_top) < 0.1f)
+            if (y_diff > 0 && Mathf.Abs(x_diff) < 0.22f)
             {
                 pushing_box = false;
                 on_ground = true;
                 is_falling = false;
             }
-            // Check if it's the side touching
-            else if (Mathf.Abs(diff_left) < 0.1f)
+            // Check if it's the left side touching
+            else if (x_diff < 0)
             {
                 // Place hand on box to left
                 front_hand.localPosition = new Vector3(hand_positions[7].x, hand_positions[7].y, 0);
                 back_hand.localPosition = new Vector3(hand_positions[8].x, hand_positions[8].y, 0);
             }
-            else if (Mathf.Abs(diff_right) < 0.1f)
+            // check if its the right side touching
+            else if (x_diff > 0)
             {
-                // Place hand on box to left
+                // Place hand on box to right
                 front_hand.localPosition = new Vector3(-hand_positions[7].x, hand_positions[7].y, 0);
                 back_hand.localPosition = new Vector3(-hand_positions[8].x, hand_positions[8].y, 0);
             }

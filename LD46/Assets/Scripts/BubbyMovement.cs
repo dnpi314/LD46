@@ -83,13 +83,15 @@ public class BubbyMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // Check relative position
+        float y_diff = transform.position.y - collision.transform.position.y;
+        float x_diff = transform.position.x - collision.transform.position.x;
         // Check if Bubby is touching the ground
         if (collision.collider.tag == "Ground")
         {
             // Check if it's the feet touching
-            ContactPoint2D contact_point = collision.GetContact(0);
-            float diff = contact_point.point.y - collision.collider.transform.position.y;
-            if (Mathf.Abs(diff) < 0.1f)
+            
+            if (y_diff > 0)
             {
                 on_ground = true;
             }
@@ -101,31 +103,33 @@ public class BubbyMovement : MonoBehaviour
                 sprite_renderer.flipX = !sprite_renderer.flipX;
             }
         }
-        // Check if Bubby is touching a box or solid object
-        if (collision.collider.tag == "Box" || collision.collider.tag == "Solid")
+        // Check if Bubby is touching a box
+        if (collision.collider.tag == "Box")
         {
-            // Check if it's the side touching
-            ContactPoint2D contact_point = collision.GetContact(0);
-            float diff_left = contact_point.point.x - (collision.collider.transform.position.x - 0.125f);
-            float diff_right = contact_point.point.x - (collision.collider.transform.position.x + 0.125f);
-            float diff_bot = contact_point.point.y - (collision.collider.transform.position.y - 0.125f);
-            float diff_top = contact_point.point.y - (collision.collider.transform.position.y + 0.125f);
             // check if its top touching
-            if (Mathf.Abs(diff_top) < 0.1f)
+            if (y_diff > 0 && Mathf.Abs(x_diff) < 0.225f)
             {
                 on_ground = true;
             }
-            if (Mathf.Abs(diff_left) < 0.1f || Mathf.Abs(diff_right) < 0.1f)
+            // Check if it's the bottom touching
+            else if (y_diff < 0 && Mathf.Abs(x_diff) < 0.225f)
+            {
+                Die(); 
+            }
+            // Otherwise its the side
+            else
             {
                 // Change direction
                 walking_direction *= -1;
                 sprite_renderer.flipX = !sprite_renderer.flipX;
             }
-            // Check if it's the bottom touching
-            else if (Mathf.Abs(diff_bot) < 0.1f)
-            {
-                Die();
-            }
+        }
+        // check if bubby is touching a solid object
+        if (collision.collider.tag == "Solid")
+        {
+            // Change direction
+            walking_direction *= -1;
+            sprite_renderer.flipX = !sprite_renderer.flipX;
         }
     }
 
