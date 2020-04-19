@@ -31,6 +31,10 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(level);
+        }
         if (Input.GetButtonDown("Activate"))
         {
             switch (ui_state)

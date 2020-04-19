@@ -222,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movement_speed: 2.5
   midair_speed: 15
-  jump_power: 8
+  jump_power: 7.5
   animation_speed: 0.1
   walk_cycle:
   - {fileID: -2311659948842064771, guid: 9a4bd5e1d94aedf4fa83622e2a0789fb, type: 3}

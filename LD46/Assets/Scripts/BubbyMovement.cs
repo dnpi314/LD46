@@ -109,6 +109,12 @@ public class BubbyMovement : MonoBehaviour
             float diff_left = contact_point.point.x - (collision.collider.transform.position.x - 0.125f);
             float diff_right = contact_point.point.x - (collision.collider.transform.position.x + 0.125f);
             float diff_bot = contact_point.point.y - (collision.collider.transform.position.y - 0.125f);
+            float diff_top = contact_point.point.y - (collision.collider.transform.position.y + 0.125f);
+            // check if its top touching
+            if (Mathf.Abs(diff_top) < 0.1f)
+            {
+                on_ground = true;
+            }
             if (Mathf.Abs(diff_left) < 0.1f || Mathf.Abs(diff_right) < 0.1f)
             {
                 // Change direction
