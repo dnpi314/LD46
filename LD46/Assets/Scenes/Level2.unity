@@ -2672,6 +2672,11 @@ PrefabInstance:
       propertyPath: finish_ui
       value: 
       objectReference: {fileID: 1094934829}
+    - target: {fileID: 5798355378010155450, guid: 2b2fd1216834d2d448d00880e223dd4a,
+        type: 3}
+      propertyPath: level
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5798355378010155451, guid: 2b2fd1216834d2d448d00880e223dd4a,
         type: 3}
       propertyPath: m_LocalPosition.x

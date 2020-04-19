@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class LevelManager : MonoBehaviour
     public Canvas finish_ui;
     public Canvas gameover_ui;
     public bool has_tutorial;
+    public int level;
 
     // Manager states
     private enum UIState { start, tutorial, game, finish, gameover};
@@ -65,8 +67,10 @@ public class LevelManager : MonoBehaviour
                 case UIState.game: // do nothing
                     break;
                 case UIState.finish: // load next level
+                    SceneManager.LoadScene(level + 1);
                     break;
                 case UIState.gameover: // restart level
+                    SceneManager.LoadScene(level);
                     break;
                 default:
                     break;
